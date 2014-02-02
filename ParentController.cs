@@ -7,6 +7,9 @@ namespace ControllerHierarchy
 {
 	public partial class ParentController : UIViewController
 	{
+		UIView containerOne;
+		UIView containerTwo;
+
 		public ParentController () //: base ("ParentController", null)
 		{
 		}
@@ -19,78 +22,43 @@ namespace ControllerHierarchy
 			// Release any cached data, images, etc that aren't in use.
 		}
 
+		public override void LoadView ()
+		{
+			View = new UIView ();
+			View.AutoresizingMask = UIViewAutoresizing.FlexibleWidth | UIViewAutoresizing.FlexibleHeight;
+			View.BackgroundColor = UIColor.FromRGBA (0x88, 0x88, 0x88, 0xf0);
+
+			containerOne = new UIView (new RectangleF (10, 100, 200, 200));
+			containerOne.TranslatesAutoresizingMaskIntoConstraints = false;
+			containerOne.AutosizesSubviews = true;
+			containerOne.BackgroundColor = UIColor.Red;
+			View.AddSubview (containerOne);
+
+			containerTwo = new UIView (new RectangleF (10, 320, 200, 200));
+			containerTwo.TranslatesAutoresizingMaskIntoConstraints = false;
+			containerTwo.AutosizesSubviews = true;
+			containerTwo.BackgroundColor = UIColor.Blue;
+			View.AddSubview (containerTwo);
+		}
+
 		public override void ViewDidLoad ()
 		{
 			base.ViewDidLoad ();
 
-			View.BackgroundColor = UIColor.FromRGB (0xFA, 0xFA, 0x0C);
+			var firstChild = new LinearChildController ();
+			AddChildViewController (firstChild);
+			containerOne.AddSubview (firstChild.View);
+			containerOne.Frame = new RectangleF (containerOne.Frame.X, containerOne.Frame.Y, containerOne.Frame.Width, firstChild.View.Frame.Height);
+			firstChild.View.Frame = containerOne.Bounds;
+			firstChild.DidMoveToParentViewController (this);
 
-			Console.WriteLine ("Parent view bounds: {0}", View.Bounds);
-			Console.WriteLine ("Parent view frame: {0}", View.Frame);
-
-			var childRect = new RectangleF (10, 100, 300, 200);
-//			var childContainer = new UIView (childRect);
-//			childContainer.BackgroundColor = UIColor.FromRGBA (0xf0, 0xf0, 0xff, 0xfa);
-
-			// add a child controller
-			var child = new ChildController ();
-			AddChildViewController (child);
-			Console.WriteLine ("Child view frame before setting: {0}", child.View.Frame);
-			child.View.Frame = childRect;
-			Add (child.View);
-			child.DidMoveToParentViewController (this);
+			var secondChild = new LinearChildController ();
+			AddChildViewController (secondChild);
+			containerTwo.AddSubview (secondChild.View);
+			containerTwo.Frame = new RectangleF (containerTwo.Frame.X, containerOne.Frame.Y + containerOne.Frame.Height + 20, containerTwo.Frame.Width, secondChild.View.Frame.Height);
+			secondChild.View.Frame = containerTwo.Bounds;
+			secondChild.DidMoveToParentViewController (this);
 		}
-
-
-		/*
-		public override void ViewDidLoad ()
-		{
-			base.ViewDidLoad ();
-
-			View.BackgroundColor = UIColor.FromRGB (0xFA, 0xFA, 0x0C);
-
-			Console.WriteLine ("Parent view bounds: {0}", View.Bounds);
-			Console.WriteLine ("Parent view frame: {0}", View.Frame);
-
-
-			var subView = new UIView (new RectangleF (10, 30, 300, 200));
-			subView.BackgroundColor = UIColor.FromRGB (0xff, 0x0f, 0x0f);
-
-			var label = new UILabel (new RectangleF (10, 40, 300, 20));
-			label.BackgroundColor = UIColor.FromRGB (0xff, 0xf0, 0xf0);
-			label.Text = "Hello Dolly!";
-
-			var childRect = new RectangleF (10, 100, 300, 200);
-			var childContainer = new UIView (childRect);
-			childContainer.BackgroundColor = UIColor.FromRGBA (0xf0, 0xf0, 0xff, 0xfa);
-
-			Console.WriteLine ("**Subview frame: {0}", subView.Frame);
-			Add (subView);
-			Console.WriteLine ("**Subview frame: {0}", subView.Frame);
-
-			Add (label);
-			Add (childContainer);
-
-			// add a child controller
-			var child = new ChildController ();
-			AddChildViewController (child);
-			Console.WriteLine ("Child view frame before setting: {0}", child.View.Frame);
-			child.View.Frame = childContainer.Frame;
-			Add (child.View);
-			child.DidMoveToParentViewController (this);
-
-
-			var linearChild = new LinearChildController ();
-			AddChildViewController (linearChild);
-			Console.WriteLine ("Linear child frame: {0}", linearChild.View.Frame);
-			linearChild.View.Frame = new RectangleF (10, 300, 300, linearChild.View.Frame.Height);
-			Console.WriteLine ("Parent controller set the frame");
-			Add (linearChild.View);
-			linearChild.DidMoveToParentViewController (this);
-
-
-		}
-*/
 	}
 
 }

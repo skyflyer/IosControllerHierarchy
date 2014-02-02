@@ -3,20 +3,21 @@ using System.Drawing;
 using MonoTouch.Foundation;
 using MonoTouch.UIKit;
 using System.Collections.Generic;
+using MonoTouch.MapKit;
 
 namespace ControllerHierarchy
 {
 	public class ChildController : UIViewController
 	{
-//		public override void LoadView ()
-//		{
-//			base.LoadView ();
-//			Console.WriteLine ("Load view frame: {0}", View.Frame);
-//		}
+		public override void LoadView ()
+		{
+			var view = new UIView (Rectangle.Empty);
+			view.AutoresizingMask = UIViewAutoresizing.FlexibleWidth | UIViewAutoresizing.FlexibleHeight;
+			View = view;
+		}
 
 		public override void ViewDidLoad ()
 		{
-//			Console.WriteLine ("Child controller - viewDidLoad");
 			base.ViewDidLoad ();
 			View.BackgroundColor = UIColor.FromRGB (0x00, 0xff, 0x00);
 		}
@@ -27,12 +28,10 @@ namespace ControllerHierarchy
 			Console.WriteLine ("Child view bounds: {0}", View.Bounds);
 			Console.WriteLine ("Child view frame: {0}", View.Frame);
 		}
+
+		public override void ViewWillLayoutSubviews ()
+		{
+			base.ViewWillLayoutSubviews ();
+		}
 	}
 }
-
-
-//			var label = new UILabel (new RectangleF(10, 10, 200, 20));
-//			label.BackgroundColor = UIColor.FromRGB (0x00, 0xff, 0x00);
-//			label.Text = "Child controller";
-//
-//			Add (label);
